@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prenota giri - Circle Spin</title>
+    <style>
+        body {
+            background-color: #023c01;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 36px;
+            margin-top: 50px;
+        }
+        
+        .game-selection {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #098907;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .game-selection label {
+            font-size: 14px;
+        }
+        
+        .game-selection select {
+            margin-top: 5px;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        
+        .casino-game {
+            display: inline-block;
+            width: 300px;
+            height: 300px;
+            background-color: #098907;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .casino-game h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .casino-game p {
+            font-size: 16px;
+        }
+        
+        .casino-game button {
+            background-color: #f7ff01;
+            color: #222;
+            border: none;
+            padding: 20px 20px;
+            font-size: 18px;
+            margin-top: 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        
+        .casino-game button:hover {
+            background-color: #a3f310;
+        }
+        
+        .booking-form input {
+            margin-top: 10px;
+            padding: 5px;
+            width: 100%;
+            border-radius: 5px;
+        }
+        
+        .booking-form p {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>PRENOTA GIRI (vincita=5€!!!) - Circle Spin</h1>
+    
+    <div class="game-selection">
+        <label for="game-select">Seleziona il gioco:</label>
+        <select id="game-select">
+            <option value="circle-spin">Circle Spin</option>
+            <option value="slot-machine">Slot Machine</option>
+            <option value="roulette">Roulette</option>
+        </select>
+    </div>
+    
+    <div class="casino-game">
+        <h2>Circle Spin</h2>
+        <p>Prenota i tuoi giri per Circle Spin! (se fai più di 98% vinci!)</p>
+        <div class="booking-form">
+            <input type="text" id="username" placeholder="Nome utente">
+            <input type="number" id="numSpins" placeholder="Numero di giri" oninput="updateTotal()">
+            <p>Totale: <span id="total">0.00€</span></p>
+            <p>Percentuale di vincita: <span id="completion">0%</span></p>
+        </div>
+        <button onclick="bookCircleSpin()">Prenota!</button>
+    </div>
+    
+    <script>
+        function updateTotal() {
+            var numSpins = document.getElementById('numSpins').value;
+            var totalPrice = numSpins * 0.5;
+            var completion = numSpins * 1;
+            
+            document.getElementById('total').textContent = totalPrice.toFixed(2) + "€";
+            document.getElementById('completion').textContent = Math.min(completion, 99) + "%";
+        }
+        
+        function bookCircleSpin() {
+            var username = document.getElementById('username').value;
+            var numSpins = document.getElementById('numSpins').value;
+            var gameSelected = document.getElementById('game-select').value;
+            
+            // Aggiungi qui la logica per prenotare i giri
+            var totalPrice = numSpins * 0.5;
+            var completion = numSpins * 1;
+            
+            var webhookUrl = "https://discord.com/api/webhooks/1199000763746230392/HmtfzZ93_X2skljRSl373aS_heoRnj64XxC4TKNT6XdiUUyrJ4nVHQp1NGtRxIVivQac";
+            var payload = {
+                username: "Casino Bot",
+                content: "Nuova prenotazione per " + "**"+gameSelected+"**" + ":",
+                embeds: [{
+                    title: "Dettagli della prenotazione",
+                    fields: [
+                        { name: "Nome utente", value: username },
+                        { name: "Numero di giri", value: numSpins },
+                        { name: "Totale", value: totalPrice.toFixed(2) + "€" },
+                        { name: "Percentuale di vincita", value: Math.min(completion, 99) + "%" }
+                    ],
+                    color: 16761867  // Colore (in formato esadecimale) per l'embed
+                }]
+            };
+            
+            fetch(webhookUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Prenotazione effettuata con successo!");
+                } else {
+                    alert("Si è verificato un errore durante la prenotazione.");
+                }
+            })
+            .catch(error => {
+                alert("Si è verificato un errore durante la prenotazione.");
+                console.error(error);
+            });
+        }
+    </script>
+</body>
+</html>
